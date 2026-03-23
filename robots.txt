@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://qbsglobal.net/sitemap.xml
