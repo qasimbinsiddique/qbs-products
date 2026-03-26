@@ -45,6 +45,7 @@ nav {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
+  will-change: transform;
 }
 
 .nav-inner {
@@ -229,6 +230,8 @@ nav {
   padding: 6rem 2rem;
   max-width: 1200px;
   margin: 0 auto;
+  content-visibility: auto;
+  contain-intrinsic-size: 0 2000px;
 }
 
 .section-header {
@@ -267,6 +270,7 @@ nav {
   position: relative;
   overflow: hidden;
   display: block;
+  contain: layout style paint;
 }
 
 .product-card::before {
@@ -381,6 +385,8 @@ nav {
 .about {
   padding: 6rem 2rem;
   border-top: 1px solid var(--border);
+  content-visibility: auto;
+  contain-intrinsic-size: 0 600px;
 }
 
 .about-inner {
@@ -430,6 +436,8 @@ nav {
 footer {
   border-top: 1px solid var(--border);
   padding: 4rem 2rem 0;
+  content-visibility: auto;
+  contain-intrinsic-size: 0 400px;
 }
 
 .footer-inner {
