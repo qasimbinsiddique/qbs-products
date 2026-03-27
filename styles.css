@@ -22,7 +22,7 @@
   --radius: 16px;
 }
 
-html { scroll-behavior: smooth; overflow-x: hidden; }
+html { scroll-behavior: smooth; overflow-x: hidden; text-rendering: optimizeSpeed; }
 
 body {
   background: var(--bg);
