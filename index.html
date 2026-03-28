@@ -19,9 +19,25 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://www.googletagmanager.com">
 <!-- Non-render-blocking font loading -->
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-<noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"></noscript>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
+<!-- Critical CSS inlined for instant first paint -->
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#09090b;--bg-card:#111113;--border:rgba(255,255,255,0.06);--text:#fafafa;--text-muted:#71717a;--accent:#ffe500;--radius:16px}
+html{scroll-behavior:smooth;overflow-x:hidden;text-rendering:optimizeSpeed}
+body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(9,9,11,0.8);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-inner{max-width:1200px;margin:0 auto;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:1.4rem;font-weight:800;letter-spacing:-0.02em;color:var(--text)}
+.logo-dot{color:var(--accent)}
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:8rem 2rem 4rem}
+.hero-content{text-align:center;max-width:720px;position:relative;z-index:1}
+.hero h1{font-size:clamp(3rem,8vw,5.5rem);font-weight:900;line-height:1.05;letter-spacing:-0.03em;margin-bottom:1.5rem}
+@media(max-width:768px){.nav-inner{padding:1rem 1.5rem}.hero{padding:7rem 1.5rem 3rem;min-height:auto}.hero h1{font-size:2.8rem}}
+</style>
 <link rel="stylesheet" href="/styles.css">
 <!-- GA4 deferred to not block rendering -->
 <script async defer src="https://www.googletagmanager.com/gtag/js?id=G-8QH4H0GSJK"></script>
@@ -287,6 +303,82 @@
     <p>&copy; 2025 QBS Global FZCO. All rights reserved. IFZA Free Zone, Dubai, UAE.</p>
   </div>
 </footer>
+
+<!-- GA4 Key Events: product_cta_click + outbound_product_click -->
+<script>
+(function() {
+  // Map card CSS classes and display names to product_viewed dimension values
+  var cardMap = {
+    'card-rekroot': 'rekroot',
+    'card-deliverhub': 'deliverhub',
+    'card-closedraft': 'closedraft',
+    'card-studymate': 'studymate',
+    'card-collabdeck': 'sponsorsuq',
+    'card-translateflow': 'naqlflow',
+    'card-nestboard': 'tenantdesk',
+    'card-reversehq': 'reversehq'
+  };
+
+  // Map external domains to product_viewed values
+  var domainMap = {
+    'rekroot.ae': 'rekroot',
+    'deliverhub.qbsglobal.net': 'deliverhub',
+    'tenantdesk.qbsglobal.net': 'tenantdesk',
+    'sponsorsuq.qbsglobal.net': 'sponsorsuq',
+    'closedraft.qbsglobal.net': 'closedraft',
+    'studymate.qbsglobal.net': 'studymate',
+    'naqlflow.qbsglobal.net': 'naqlflow',
+    'reversehq.qbsglobal.net': 'reversehq'
+  };
+
+  // Helper: find product from a card element's class list
+  function getProductFromCard(el) {
+    while (el && el !== document.body) {
+      if (el.classList) {
+        for (var key in cardMap) {
+          if (el.classList.contains(key)) return cardMap[key];
+        }
+      }
+      el = el.parentElement;
+    }
+    return null;
+  }
+
+  // Helper: get product from an outbound URL hostname
+  function getProductFromUrl(href) {
+    try {
+      var hostname = new URL(href).hostname.replace(/^www\./, '');
+      return domainMap[hostname] || null;
+    } catch(e) { return null; }
+  }
+
+  // Event delegation on the entire document
+  document.addEventListener('click', function(e) {
+    var target = e.target;
+
+    // 1. Check if click is on/inside a product card
+    var product = getProductFromCard(target);
+    if (product) {
+      gtag('event', 'product_cta_click', { product_viewed: product });
+    }
+
+    // 2. Check if click is on an outbound product link
+    var link = target.closest ? target.closest('a[href]') : null;
+    if (!link) {
+      // Fallback for older browsers
+      var el = target;
+      while (el && el.tagName !== 'A') el = el.parentElement;
+      link = el;
+    }
+    if (link && link.href) {
+      var outboundProduct = getProductFromUrl(link.href);
+      if (outboundProduct) {
+        gtag('event', 'outbound_product_click', { product_viewed: outboundProduct });
+      }
+    }
+  });
+})();
+</script>
 
 </body>
 </html>
