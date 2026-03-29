@@ -1,4 +1,8 @@
+# robots.txt — QBS Products Hub
+# https://qbsglobal.net / https://www.qbsglobal.net
+
 User-agent: *
 Allow: /
 
 Sitemap: https://qbsglobal.net/sitemap.xml
+Sitemap: https://www.qbsglobal.net/sitemap.xml
