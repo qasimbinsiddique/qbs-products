@@ -17,17 +17,16 @@
 <!-- Preconnect to Google Fonts for faster loading -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://www.googletagmanager.com">
-<!-- Non-render-blocking font loading -->
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-<noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
+<!-- Non-render-blocking font loading — only 600/700/800 used -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800&display=swap" rel="stylesheet"></noscript>
 <!-- Critical CSS inlined for instant first paint -->
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#09090b;--bg-card:#111113;--border:rgba(255,255,255,0.06);--text:#fafafa;--text-muted:#71717a;--accent:#ffe500;--radius:16px}
 html{scroll-behavior:smooth;overflow-x:hidden;text-rendering:optimizeSpeed}
-body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.6;font-weight:500;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
 nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(9,9,11,0.8);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
 .nav-inner{max-width:1200px;margin:0 auto;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between}
@@ -38,14 +37,20 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(9,9,11,0.8);
 .hero h1{font-size:clamp(3rem,8vw,5.5rem);font-weight:900;line-height:1.05;letter-spacing:-0.03em;margin-bottom:1.5rem}
 @media(max-width:768px){.nav-inner{padding:1rem 1.5rem}.hero{padding:7rem 1.5rem 3rem;min-height:auto}.hero h1{font-size:2.8rem}}
 </style>
-<link rel="stylesheet" href="/styles.css">
-<!-- GA4 deferred to not block rendering -->
-<script async defer src="https://www.googletagmanager.com/gtag/js?id=G-8QH4H0GSJK"></script>
+<!-- GA4 loaded after first paint via requestIdleCallback -->
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', 'G-8QH4H0GSJK', { send_page_view: true, transport_type: 'beacon' });
+  function loadGA() {
+    var s = document.createElement('script');
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-8QH4H0GSJK';
+    s.async = true;
+    document.head.appendChild(s);
+    gtag('config', 'G-8QH4H0GSJK', { send_page_view: true, transport_type: 'beacon' });
+  }
+  if ('requestIdleCallback' in window) { requestIdleCallback(loadGA); }
+  else { setTimeout(loadGA, 2000); }
 </script>
 <script type="application/ld+json">
 {
